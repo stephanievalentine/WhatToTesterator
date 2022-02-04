@@ -44,7 +44,12 @@ public class WhatToTesterator {
 
         if (choice.equals("class")) {
             promptAboutAClass(1);
-            
+        } else if (choice.equals("feature")) {
+            promptAboutAFeature(1);
+        } else if (choice.equals("bug")) {
+            println("Simulate the circumstances that reproduce the bug, then fix the bug, ensure test passes. Keep your test in the codebase.",
+                    0);
+            return;
         }
 
         newline();
@@ -57,10 +62,21 @@ public class WhatToTesterator {
 
     }
 
+    private static void promptAboutAFeature(int indentLevel) {
+        String[] behaviors = prompt(
+                "What does your feature enable the user to do (if more than one thing, separate by commas)?",
+                indentLevel).split(", ");
+        for (String behavior : behaviors) {
+            newline();
+            promptAboutABehavior("user", behavior, indentLevel + 1);
+        }
+    }
+
     public static void promptAboutAClass(int indentLevel) {
         String className = prompt("What's the name of that class?", indentLevel);
 
-        String generalBehavior = prompt("Okay. From the perspective of a user, what does a " + className + " do?", indentLevel);
+        String generalBehavior = prompt("Okay. From the perspective of a user, what does a " + className + " do?",
+                indentLevel);
 
         String[] behaviors = prompt("Let's break that up into parts. Here's what you said \"" + generalBehavior
                 + "\". Will you write those behaviors in a comma separated list?", indentLevel).split(", ");
@@ -69,8 +85,6 @@ public class WhatToTesterator {
             newline();
             promptAboutABehavior(className, behavior, indentLevel + 1);
         }
-
-        // integration
 
     }
 
@@ -94,7 +108,8 @@ public class WhatToTesterator {
                 + "\" (comma-separated list, please).", indentLevel);
 
         possibleTests += ", " + prompt(
-                "What are the side-effects related to PacMan's behavior \"" + theBehavior + "\"?", indentLevel);
+                "What are the side-effects related to the " + doerOfTheBehavior + " behavior \"" + theBehavior + "\"?",
+                indentLevel);
 
         String[] suggestedTests = possibleTests.split(", ");
 
