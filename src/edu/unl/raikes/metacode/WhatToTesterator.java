@@ -86,6 +86,14 @@ public class WhatToTesterator {
             promptAboutABehavior(className, behavior, indentLevel + 1);
         }
 
+        newline();
+        String[] initRequirements = prompt("This has been really helpful. One last thing. What does a " + className
+                + " need to know in order to be successful? What needs to be initialized in a " + className
+                + " before use (comma-separated list)?", indentLevel).split(", ");
+
+        for (String requirement : initRequirements) {
+            tests.add(className + " initialization includes: " + requirement);
+        }
     }
 
     public static void promptAboutABehavior(String doerOfTheBehavior, String theBehavior, int indentLevel) {
@@ -114,7 +122,9 @@ public class WhatToTesterator {
         String[] suggestedTests = possibleTests.split(", ");
 
         for (String test : suggestedTests) {
-            tests.add(doerOfTheBehavior + " " + theBehavior + ": " + test);
+            if (!test.equals("")) {
+                tests.add(doerOfTheBehavior + " " + theBehavior + ": " + test);
+            }
         }
     }
 
