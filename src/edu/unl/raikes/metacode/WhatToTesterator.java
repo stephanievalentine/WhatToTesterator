@@ -19,61 +19,16 @@ public class WhatToTesterator {
     }
 
     /**
-     * This function prompts the user for a string value, then returns the user- value to the caller.
-     *
-     * @param promptString The string that asks a console user for a specific need
-     * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
-     * @return the user-supplied response to the prompt
-     */
-    public static String prompt(String promptString, int indentLevel) {
-        System.out.print(makeSpaces(indentLevel) + promptString + " ");
-        return scanner.nextLine();
-    }
-
-    /**
-     * This function prints a string to the console, with a preceding number of spaces.
-     *
-     * @param toPrint the string to be printed to the console
-     * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
-     */
-    public static void println(String toPrint, int indentLevel) {
-        System.out.println(makeSpaces(indentLevel) + toPrint);
-    }
-
-    /**
-     * This function prints a newline to the console.
-     *
-     */
-    public static void newline() {
-        System.out.println();
-    }
-
-    /**
-     * This function generates a string consisting of a provided number of spaces.
-     *
-     * @param indentLevel the number of spaces requested
-     * @return a string consisting of indentLevel spaces
-     */
-    public static String makeSpaces(int indentLevel) {
-        String spaces = "";
-        for (int i = 0; i < indentLevel; i++) {
-            spaces += "  ";
-        }
-        return spaces;
-    }
-
-    /**
      * This function handles the prompting functionality related to the addition of a feature to a codebase.
      *
      * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
      */
     private static void promptAboutAFeature(int indentLevel) {
-        String[] behaviors = prompt(
-                "What does your feature enable the user to do (if more than one thing, separate by commas)?",
-                indentLevel).split(", ");
+        String[] behaviors = prompt("What does your feature enable the consumer of your code to do "
+                + "(if more than one thing, separate by commas)?", indentLevel).split(", ");
         for (String behavior : behaviors) {
             newline();
-            promptAboutABehavior("user", behavior, indentLevel + 1);
+            promptAboutABehavior("the code", behavior, indentLevel + 1);
         }
     }
 
@@ -85,7 +40,8 @@ public class WhatToTesterator {
     private static void promptAboutAClass(int indentLevel) {
         String className = prompt("What's the name of that class?", indentLevel);
 
-        String generalBehavior = prompt("Okay. From the perspective of a user, what does a " + className + " do?",
+        String generalBehavior = prompt(
+                "Okay. From the perspective of a consumer of this class, what does a " + className + " do?",
                 indentLevel);
 
         String[] behaviors = prompt("Let's break that up into parts. Here's what you said \"" + generalBehavior
@@ -111,15 +67,14 @@ public class WhatToTesterator {
      *
      * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
      */
-    public static void promptAboutABehavior(String doerOfTheBehavior, String theBehavior, int indentLevel) {
+    private static void promptAboutABehavior(String doerOfTheBehavior, String theBehavior, int indentLevel) {
         println("Got it. Let's talk more about \"" + theBehavior + "\".", indentLevel);
 
         indentLevel++;
-     
-        // we don't keep these values, but they help users clarify their thoughts before we dig into details
-        prompt("How exactly does a " + doerOfTheBehavior + " perform this behavior?", indentLevel);
-        prompt("How do you know that " + doerOfTheBehavior
-                + " successfully performs the behavior \"" + theBehavior + "\"?", indentLevel);
+
+        String happyPath = prompt("On the happy path, how do you know that " + doerOfTheBehavior
+                + " successfully performs the behavior \"" + theBehavior + "\"?", indentLevel) + " (happy path)";
+        tests.add(happyPath);
 
         String possibleTests = prompt("What are some circumstances/contexts when you would expect a "
                 + doerOfTheBehavior + " to successfully \"" + theBehavior + "\" (comma-separated list, please)?",
@@ -145,11 +100,55 @@ public class WhatToTesterator {
     }
 
     /**
+     * This function prompts the user for a string value, then returns the user- value to the caller.
+     *
+     * @param promptString The string that asks a console user for a specific need
+     * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
+     * @return the user-supplied response to the prompt
+     */
+    private static String prompt(String promptString, int indentLevel) {
+        System.out.print(makeSpaces(indentLevel) + promptString + " ");
+        return scanner.nextLine();
+    }
+
+    /**
+     * This function prints a string to the console, with a preceding number of spaces.
+     *
+     * @param toPrint the string to be printed to the console
+     * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
+     */
+    private static void println(String toPrint, int indentLevel) {
+        System.out.println(makeSpaces(indentLevel) + toPrint);
+    }
+
+    /**
+     * This function prints a newline to the console.
+     *
+     */
+    private static void newline() {
+        System.out.println();
+    }
+
+    /**
+     * This function generates a string consisting of a provided number of spaces.
+     *
+     * @param indentLevel the number of spaces requested
+     * @return a string consisting of indentLevel spaces
+     */
+    private static String makeSpaces(int indentLevel) {
+        String spaces = "";
+        for (int i = 0; i < indentLevel; i++) {
+            spaces += "  ";
+        }
+        return spaces;
+    }
+
+    /**
      * This function provides the chatbot functionality. What needs to be tested?
      *
      * @param args no args are used in this method
      */
-    public static void main(String[] args) {
+    private static void main(String[] args) {
         println("So you wrote/need to write some code to do a thing. Great!\n"
                 + "Let's figure out what you need to test.", 0);
         newline();
