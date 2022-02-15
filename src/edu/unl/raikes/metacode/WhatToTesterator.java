@@ -148,7 +148,7 @@ public class WhatToTesterator {
      *
      * @param args no args are used in this method
      */
-    private static void main(String[] args) {
+    public static void main(String[] args) {
         println("So you wrote/need to write some code to do a thing. Great!\n"
                 + "Let's figure out what you need to test.", 0);
         newline();
