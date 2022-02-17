@@ -24,8 +24,11 @@ public class WhatToTesterator {
      * @param indentLevel How many spaces indented should the text be? (If unknown, supply 0)
      */
     private static void promptAboutAFeature(int indentLevel) {
-        String[] behaviors = prompt("What does your feature enable the consumer of your code to do "
-                + "(if more than one thing, separate by commas)?", indentLevel).split(", ");
+        String[] behaviors = prompt(
+                "What does your feature enable the consumer of your code to do? These behaviors may exist in the code "
+                        + "you wrote or in other careas of the codebase. Think: By adding my feature, these behaviors are now possible."
+                        + " (If more than one thing, separate by commas)?",
+                indentLevel).split(", ");
         for (String behavior : behaviors) {
             newline();
             promptAboutABehavior("the code", behavior, indentLevel + 1);
@@ -40,12 +43,13 @@ public class WhatToTesterator {
     private static void promptAboutAClass(int indentLevel) {
         String className = prompt("What's the name of that class?", indentLevel);
 
-        String generalBehavior = prompt(
-                "Okay. From the perspective of a consumer of this class, what does a " + className + " do?",
-                indentLevel);
-
-        String[] behaviors = prompt("Let's break that up into parts. Here's what you said \"" + generalBehavior
-                + "\". Will you write those behaviors in a comma separated list?", indentLevel).split(", ");
+        String[] behaviors  = prompt("What behaviors does " + className
+                + " enable users of your system and/or consumers of your class to do? \n" + makeSpaces(indentLevel)
+                + "These behaviors may exist in the code you wrote or in other areas of the codebase. \n"
+                + makeSpaces(indentLevel)
+                + "Think: by adding my class, these behaviors are now possible. "
+                + "(If more than one thing, separate by commas.)",
+                indentLevel).split(", ");;
 
         for (String behavior : behaviors) {
             newline();
@@ -72,23 +76,31 @@ public class WhatToTesterator {
 
         indentLevel++;
 
-        String happyPath = prompt("On the happy path, how do you know that " + doerOfTheBehavior
+        // what to look for on the happy path
+        String possibleTests = prompt("On the happy path, how do you know that " + doerOfTheBehavior
                 + " successfully performs the behavior \"" + theBehavior + "\"?", indentLevel) + " (happy path)";
-        tests.add(happyPath);
 
-        String possibleTests = prompt("What are some circumstances/contexts when you would expect a "
-                + doerOfTheBehavior + " to successfully \"" + theBehavior + "\" (comma-separated list, please)?",
-                indentLevel);
+        // circumstances for the happy path
+        possibleTests += ", "
+                + prompt(
+                        "What are some circumstances/contexts when you would expect a " + doerOfTheBehavior
+                                + " to successfully \"" + theBehavior + "\" (comma-separated list, please)?",
+                        indentLevel);
 
+        // when the behavior should be prevented from happening
         possibleTests += ", " + prompt("What are some constraints of the " + doerOfTheBehavior
                 + " in terms of their behavior \"" + theBehavior + "\" (comma-separated list, please)?", indentLevel);
 
+        // edge cases
         possibleTests += ", " + prompt("Please share any other weird or extreme edge cases related to \"" + theBehavior
                 + "\" (comma-separated list, please).", indentLevel);
 
-        possibleTests += ", " + prompt(
-                "What are the side-effects related to the " + doerOfTheBehavior + " behavior \"" + theBehavior + "\"?",
-                indentLevel);
+        // side effects
+        possibleTests += ", "
+                + prompt("Are there any side-effects, possibly in other parts of the codebase, related to the "
+                        + doerOfTheBehavior
+                        + " behavior that you haven't mentioned yet? (comma-separated list please) \"" + theBehavior
+                        + "\"?", indentLevel);
 
         String[] suggestedTests = possibleTests.split(", ");
 
@@ -168,8 +180,7 @@ public class WhatToTesterator {
         }
 
         newline();
-        println("Great. I'll help you organize all of those thoughts. I think you should test at least the following: ",
-                0);
+        println("Great. I'll help you organize all of those thoughts. Here are some ideas for tests: ", 0);
 
         for (String test : tests) {
             println(test, 2);
@@ -177,5 +188,4 @@ public class WhatToTesterator {
 
         scanner.close();
     }
-
 }
